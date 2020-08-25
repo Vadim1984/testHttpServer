@@ -32,20 +32,14 @@ public class Dispatcher implements Runnable {
         try {
             BufferedReader clientBuffer = new BufferedReader(new InputStreamReader(client.getInputStream()));
             Request request = RequestParser.parse(clientBuffer);
+            CustomController controller = urlToControllerMapping.get(request.getPath());
 
-            final boolean controllerWasFound = urlToControllerMapping.entrySet().stream()
-                    .anyMatch(entry -> entry.getKey().equals(request.getPath()));
-
-            final String mappings = String.join(", ", urlToControllerMapping.keySet());
-
-            if(!controllerWasFound){
+            if(controller == null){
+                final String mappings = String.join(", ", urlToControllerMapping.keySet());
                 throw new ServerException("path: " + request.getPath() + " cannot be processed. Available mappings: " + mappings);
             }
 
-            urlToControllerMapping.entrySet().stream()
-                    .filter(entry -> entry.getKey().equals(request.getPath()))
-                    .forEach(entry -> entry.getValue().handle(request, client));
-
+            controller.handle(request, client);
         } catch (IOException | ServerException e) {
             errorsProcessingController.handleError(e, client);
         }
