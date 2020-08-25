@@ -35,10 +35,10 @@ public class Dispatcher implements Runnable {
             DataOutputStream outToClient = new DataOutputStream(client.getOutputStream());
             Request request = RequestParser.parse(clientBuffer);
 
-            final boolean controllerWaFound = urlToControllerMapping.entrySet().stream()
+            final boolean controllerWasFound = urlToControllerMapping.entrySet().stream()
                     .anyMatch(entry -> entry.getKey().equals(request.getPath()));
 
-            if(!controllerWaFound){
+            if(!controllerWasFound){
                 throw new ServerException("path: " + request.getPath() + " cannot be processed.");
             }
 
