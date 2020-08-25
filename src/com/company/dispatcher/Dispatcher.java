@@ -14,8 +14,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.stream.Collectors.joining;
-
 public class Dispatcher implements Runnable {
     private Socket client;
     private Map<String, CustomController> urlToControllerMapping;
@@ -38,9 +36,7 @@ public class Dispatcher implements Runnable {
             final boolean controllerWasFound = urlToControllerMapping.entrySet().stream()
                     .anyMatch(entry -> entry.getKey().equals(request.getPath()));
 
-            final String mappings = urlToControllerMapping.entrySet().stream()
-                    .map(Map.Entry::getKey)
-                    .collect(joining(", "));
+            final String mappings = String.join(", ", urlToControllerMapping.keySet());
 
             if(!controllerWasFound){
                 throw new ServerException("path: " + request.getPath() + " cannot be processed. Available mappings: " + mappings);
@@ -50,9 +46,7 @@ public class Dispatcher implements Runnable {
                     .filter(entry -> entry.getKey().equals(request.getPath()))
                     .forEach(entry -> entry.getValue().handle(request, client));
 
-        } catch (IOException e) {
-            throw new ServerException(e);
-        } catch (ServerException e) {
+        } catch (IOException | ServerException e) {
             errorsProcessingController.handleError(e, client);
         }
     }
