@@ -1,22 +1,22 @@
 package com.company.dto;
 
-import com.company.enums.Method;
+import com.company.enums.HttpMethod;
 
 import java.util.Map;
 
-public class Request {
-    private Method method;
+public class HttpRequest {
+    private HttpMethod httpMethod;
     private String path;
     private String httpVersion;
     private Map<String, String> headers;
     private Map<String, String> queryParams;
 
-    public Method getMethod() {
-        return method;
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
     }
 
-    public void setMethod(Method method) {
-        this.method = method;
+    public void setHttpMethod(HttpMethod httpMethod) {
+        this.httpMethod = httpMethod;
     }
 
     public String getPath() {

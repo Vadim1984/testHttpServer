@@ -1,6 +1,6 @@
 package com.company.enums;
 
-public enum Method {
+public enum HttpMethod {
     GET("GET"),
     POST("POST"),
     PUT("PUT"),
@@ -8,7 +8,7 @@ public enum Method {
 
     private String method;
 
-    Method(String method){
+    HttpMethod(String method){
         this.method = method;
     }
 }
