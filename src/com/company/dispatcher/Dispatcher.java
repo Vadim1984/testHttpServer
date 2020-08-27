@@ -5,6 +5,7 @@ import com.company.controllers.CustomController;
 import com.company.controllers.ErrorsProcessingController;
 import com.company.dto.HttpRequest;
 import com.company.exceptions.ServerException;
+import com.company.server.CustomHttpServer;
 import com.company.util.RequestParser;
 
 import java.io.BufferedReader;
@@ -26,10 +27,10 @@ public class Dispatcher implements Runnable {
         try {
             BufferedReader clientBuffer = new BufferedReader(new InputStreamReader(client.getInputStream()));
             HttpRequest httpRequest = RequestParser.parse(clientBuffer);
-            CustomController controller = Main.urlToControllerMapping.get(httpRequest.getPath());
+            CustomController controller = CustomHttpServer.urlToControllerMapping.get(httpRequest.getPath());
 
             if(controller == null){
-                String mappings = String.join(", ", Main.urlToControllerMapping.keySet());
+                String mappings = String.join(", ", CustomHttpServer.urlToControllerMapping.keySet());
                 throw new ServerException("path: " + httpRequest.getPath() + " cannot be processed. Available mappings: " + mappings);
             }
 
