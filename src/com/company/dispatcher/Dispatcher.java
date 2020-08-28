@@ -36,7 +36,7 @@ public class Dispatcher implements Runnable {
                 throw new ServerException("path: " + httpRequest.getPath() + " cannot be processed. Available mappings: " + mappings);
             }
 
-            controller.processRequest(httpRequest, client);
+            controller.handle(httpRequest, client);
         } catch (IOException | ServerException e) {
             errorsProcessingController.handleError(e, client);
         }
