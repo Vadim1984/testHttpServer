@@ -28,7 +28,7 @@ public class RequestParser {
 
                 if (GET.equals(requestHttpMethod) && path.contains("?")) {
                     final int beginOfPathParams = path.indexOf("?");
-                    httpRequest.setQueryParams(parsePathParams(path.substring(beginOfPathParams + 1)));
+                    httpRequest.setQueryParams(parseQueryString(path.substring(beginOfPathParams + 1)));
                     path = path.substring(0, beginOfPathParams);
                 }
 
@@ -64,13 +64,13 @@ public class RequestParser {
         return headers;
     }
 
-    private static Map<String, String> parsePathParams(String pathParams) {
+    private static Map<String, String> parseQueryString(String queryString) {
         Map<String, String> params = new HashMap<>();
 
-        if (pathParams == null || pathParams.isEmpty())
-            throw new ServerException("url parameters should be in format: parameterName=parameterValue");
+        if (queryString == null || queryString.isEmpty())
+            throw new ServerException("url query parameters should be in format: parameterName=parameterValue");
 
-        final String[] stringParams = pathParams.split("&");
+        final String[] stringParams = queryString.split("&");
 
         Stream.of(stringParams)
                 .map(string -> string.split("="))

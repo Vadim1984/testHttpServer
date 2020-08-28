@@ -3,6 +3,7 @@ package com.company.server;
 import com.company.controllers.CustomController;
 import com.company.controllers.TestController;
 import com.company.dispatcher.Dispatcher;
+import com.company.dto.RequestMatcher;
 import com.company.exceptions.ServerException;
 import com.company.util.ServerConfig;
 
@@ -16,10 +17,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class CustomHttpServer {
-    public static Map<String, CustomController> urlToControllerMapping = new LinkedHashMap<>();
+    public static Map<RequestMatcher, CustomController> urlToControllerMapping = new LinkedHashMap<>();
 
     static {
-        urlToControllerMapping.put("/test", new TestController());
+        TestController testController = new TestController();
+        urlToControllerMapping.put(testController.getRequestMatcher(), testController);
     }
 
     public void startServer(){
@@ -35,7 +37,6 @@ public class CustomHttpServer {
                 System.out.println("Thread pull size: " + executor.getPoolSize());
                 System.out.println("Thread pull queue: " + executor.getQueue().size());
             }
-
         } catch (IOException | ServerException e) {
             System.out.println(e.getMessage());
         } finally {

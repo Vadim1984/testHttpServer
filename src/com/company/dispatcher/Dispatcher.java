@@ -1,9 +1,9 @@
 package com.company.dispatcher;
 
-import com.company.Main;
 import com.company.controllers.CustomController;
 import com.company.controllers.ErrorsProcessingController;
 import com.company.dto.HttpRequest;
+import com.company.dto.RequestMatcher;
 import com.company.exceptions.ServerException;
 import com.company.server.CustomHttpServer;
 import com.company.util.RequestParser;
@@ -27,14 +27,16 @@ public class Dispatcher implements Runnable {
         try {
             BufferedReader clientBuffer = new BufferedReader(new InputStreamReader(client.getInputStream()));
             HttpRequest httpRequest = RequestParser.parse(clientBuffer);
-            CustomController controller = CustomHttpServer.urlToControllerMapping.get(httpRequest.getPath());
+            RequestMatcher currentRequestMatcher = new RequestMatcher(httpRequest);
+
+            CustomController controller = CustomHttpServer.urlToControllerMapping.get(currentRequestMatcher);
 
             if(controller == null){
-                String mappings = String.join(", ", CustomHttpServer.urlToControllerMapping.keySet());
+                String mappings = String.join(", ", CustomHttpServer.urlToControllerMapping.keySet().toString());
                 throw new ServerException("path: " + httpRequest.getPath() + " cannot be processed. Available mappings: " + mappings);
             }
 
-            controller.handle(httpRequest, client);
+            controller.processRequest(httpRequest, client);
         } catch (IOException | ServerException e) {
             errorsProcessingController.handleError(e, client);
         }

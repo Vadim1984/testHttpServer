@@ -1,6 +1,8 @@
 package com.company.controllers;
 
 import com.company.dto.HttpRequest;
+import com.company.dto.RequestMatcher;
+import com.company.enums.HttpMethod;
 import com.company.util.ResponseBuilder;
 import com.company.util.ResponseStatus;
 import com.company.exceptions.ServerException;
@@ -8,9 +10,11 @@ import com.company.exceptions.ServerException;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class TestController implements CustomController {
+
     @Override
     public void handle(HttpRequest httpRequest, Socket client) {
         try (DataOutputStream outputToClient = new DataOutputStream(client.getOutputStream())) {
@@ -26,5 +30,10 @@ public class TestController implements CustomController {
         } catch (IOException e) {
             throw new ServerException(e);
         }
+    }
+
+    @Override
+    public RequestMatcher getRequestMatcher() {
+        return new RequestMatcher("/test", HttpMethod.GET, Arrays.asList("param"));
     }
 }
